@@ -158,6 +158,7 @@
                 UI.finalizarAnimacion();
                 if (!this.estado.partidaFinalizada) {
                     UI.bloquearControles(false);
+                    UI.cache.botonGirar.focus()
                 }
             }
         },
@@ -190,6 +191,7 @@
             }
 
             UI.prepararBotonReinicio();
+            UI.cache.botonGirar.focus();
         },
 
         /** Reinicia todo para un nuevo torneo desde cero */
@@ -485,7 +487,22 @@
             UI.cache.formulario.requestSubmit();
         });
 
-        document.addEventListener('keydown', (e) => {
+      document.addEventListener('keydown', (e) => {
+            // Captura global de la tecla Intro
+            if (e.key === 'Enter') {
+                if (GameLogic.estado.partidaFinalizada) {
+                    e.preventDefault();
+                    UI.cache.formulario.requestSubmit(); // Dispara el reinicio del torneo
+                    return;
+                }
+                if (!UI.cache.botonGirar.disabled) {
+                    e.preventDefault();
+                    UI.cache.formulario.requestSubmit(); // Dispara el giro de la ruleta
+                    return;
+                }
+            }
+
+            // Mapeo existente de teclas 1, 2, 3
             if (GameLogic.estado.partidaFinalizada) return;
             if (UI.cache.botonGirar.disabled) return;
 
