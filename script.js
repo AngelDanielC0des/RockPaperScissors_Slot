@@ -11,7 +11,7 @@
 
     /* ── 1. CONFIGURACIÓN Y CONSTANTES GLOBALES ────────────────────────────── */
     const CLAVE_SESION = 'ESTADO_PARTIDA_PPT';
-    const TITULO_ORIGINAL = 'Piedra, Papel o Tijera - Slot Edition'
+    const TITULO_ORIGINAL = document.title;
 
     const CONFIG = {
         alturaItemPx: 100,
