@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 Piedra, Papel, Tijera - Componente Premium</title>
+    <meta name="description" content="Juego de Piedra, Papel o Tijera interactivo contra la máquina.Con animaciones, sonido y sistema de puntuación, y memoria. 
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎰</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <main class="juego-ppt" aria-labelledby="titulo-juego">
+        
+        <header class="juego-ppt__cabecera">
+            <h1 id="titulo-juego" class="juego-ppt__titulo">
+                <span aria-hidden="true">🎰</span> Piedra, Papel o Tijera <span aria-hidden="true">🎰</span>
+            </h1>
+            
+            <div class="juego-ppt__marcador" role="group" aria-label="Marcador actual">
+                <p class="juego-ppt__puntuacion">Tú: <span id="marcador-puntos-jugador" class="juego-ppt__puntuacion-valor">0</span></p>
+                <p class="juego-ppt__puntuacion">Empates: <span id="marcador-puntos-empates" class="juego-ppt__puntuacion-valor">0</span></p>
+                <p class="juego-ppt__puntuacion">Máquina: <span id="marcador-puntos-maquina" class="juego-ppt__puntuacion-valor">0</span></p>
+            </div>
+            
+            <p
+                id="mensaje-estado-partida"
+                class="juego-ppt__estado"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true">
+                Elige tu opción y gira
+            </p>
+        </header>
+
+        <section class="juego-ppt__zona-principal" aria-label="Área de juego">
+            <div class="juego-ppt__contenedor-ruletas">
+                
+                <div class="juego-ppt__modulo-ruleta">
+                    <h2 class="juego-ppt__subtitulo-ruleta">Jugador</h2>
+                    <div class="juego-ppt__ventana-visualizacion" role="img" aria-label="Ruleta del Jugador">
+                        <ul id="carrusel-opciones-jugador" class="juego-ppt__carrusel-tira" aria-hidden="true"></ul>
+                    </div>
+                </div>
+
+                <div class="juego-ppt__modulo-ruleta">
+                    <h2 class="juego-ppt__subtitulo-ruleta">Máquina</h2>
+                    <div class="juego-ppt__ventana-visualizacion" role="img" aria-label="Ruleta de la Máquina">
+                        <ul id="carrusel-opciones-maquina" class="juego-ppt__carrusel-tira" aria-hidden="true"></ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <form id="formulario-control-juego" class="juego-ppt__formulario" novalidate>
+                <fieldset class="juego-ppt__selector-opciones" role="radiogroup">
+                    <legend class="sr-only">Selecciona tu jugada para esta ronda</legend>
+
+                    <input id="opcion-piedra" class="juego-ppt__radio" type="radio" name="opcionSeleccionadaJugador" value="0" required aria-keyshortcuts="1">
+                    <label for="opcion-piedra" class="juego-ppt__etiqueta">✊ Piedra <kbd>1</kbd></label>
+
+                    <input id="opcion-papel" class="juego-ppt__radio" type="radio" name="opcionSeleccionadaJugador" value="1" aria-keyshortcuts="2">
+                    <label for="opcion-papel" class="juego-ppt__etiqueta">✋ Papel <kbd>2</kbd></label>
+
+                    <input id="opcion-tijera" class="juego-ppt__radio" type="radio" name="opcionSeleccionadaJugador" value="2" aria-keyshortcuts="3">
+                    <label for="opcion-tijera" class="juego-ppt__etiqueta">✌️ Tijera <kbd>3</kbd></label>
+                </fieldset>
+                
+                <div class="juego-ppt__zona-boton">
+                    <span id="palanca-tragaperras" class="juego-ppt__palanca" aria-hidden="true">
+                        <span class="juego-ppt__palanca-bola"></span>
+                    </span>
+                    <button type="submit" id="boton-iniciar-giro" class="juego-ppt__boton-accion">¡GIRAR!</button>
+                </div>
+            </form>
+        </section>
+        
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,491 @@
+/* ==========================================================================
+   0. TOKENS DE DISEÑO (Variables del Componente)
+   ========================================================================== */
+:root {
+    --ppt-color-fondo: #1a1a2e;
+    --ppt-color-texto: #ffffff;
+    --ppt-color-acento: #e94560;
+    --ppt-color-acento-brillo: #ff6b81;
+    --ppt-color-exito: #4ecca3;
+    --ppt-color-empate: #ffdf00;
+    --ppt-color-caja-principal: #0f3460;
+    --ppt-color-caja-secundaria: #16213e;
+    --ppt-color-sombra-boton: #b33046;
+    --ppt-color-deshabilitado: #4a4a5a;
+    --ppt-alto-item-ruleta: 100px;
+}
+
+/* ==========================================================================
+   1. RESET Y AISLAMIENTO DE ESTILOS
+   ========================================================================== */
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-image: url("background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    margin: 0;
+    padding-inline: 20px;
+    padding-block: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-block-size: 100dvh;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Clase de utilidad para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ==========================================================================
+   2. CONTENEDOR EN CASCADA COMPONENTE MAESTRO (BEM)
+   ========================================================================== */
+.juego-ppt {
+    background: var(--ppt-color-caja-secundaria);
+    padding-inline: 30px;
+    padding-block: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    inline-size: 100%;
+    max-inline-size: 600px;
+    text-align: center;
+}
+
+.juego-ppt__titulo {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    margin-block-end: 20px;
+    color: var(--ppt-color-texto);
+}
+
+.juego-ppt__marcador {
+    display: flex;
+    justify-content: space-around;
+    background: var(--ppt-color-caja-principal);
+    padding-block: 15px;
+    padding-inline: 15px;
+    border-radius: 12px;
+    margin-block-end: 15px;
+}
+
+.juego-ppt__puntuacion {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ppt-color-texto);
+}
+
+.juego-ppt__puntuacion-valor {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.juego-ppt__estado {
+    font-size: 1.2rem;
+    margin-block-end: 25px;
+    min-block-size: 30px;
+    color: var(--ppt-color-exito);
+    transition: color 0.3s ease;
+}
+
+/* ==========================================================================
+   3. MECANISMO VISUAL DE LAS RULETAS
+   ========================================================================== */
+.juego-ppt__contenedor-ruletas {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-block-end: 30px;
+}
+
+.juego-ppt__modulo-ruleta {
+    container-type: inline-size;
+    flex: 1;
+    background: var(--ppt-color-caja-principal);
+    padding: 15px;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Ajuste tipográfico adaptativo según el ancho del contenedor */
+@container (min-inline-size: 180px) {
+    .juego-ppt__carrusel-item {
+        font-size: 3.2rem;
+    }
+}
+
+.juego-ppt__subtitulo-ruleta {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-block-end: 10px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.juego-ppt__ventana-visualizacion {
+    height: var(--ppt-alto-item-ruleta);
+    overflow: hidden;
+    background: var(--ppt-color-fondo);
+    border-radius: 10px;
+    position: relative;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+}
+
+/* Sombras de profundidad arriba y abajo del visor de la ruleta */
+.juego-ppt__ventana-visualizacion::before,
+.juego-ppt__ventana-visualizacion::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    z-index: 2;
+    pointer-events: none;
+}
+.juego-ppt__ventana-visualizacion::before {
+    top: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+}
+
+.juego-ppt__ventana-visualizacion::after {
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+}
+
+.juego-ppt__carrusel-tira {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.juego-ppt__carrusel-tira.is-animating {
+    will-change: transform;
+}
+
+/* Atenúa etiquetas durante la animación para guiar la atención */
+.juego-ppt:has(.juego-ppt__carrusel-tira.is-animating) .juego-ppt__etiqueta {
+    pointer-events: none;
+    opacity: 0.5;
+    transition: opacity 0.25s ease;
+}
+
+.juego-ppt__carrusel-item {
+    height: var(--ppt-alto-item-ruleta);
+    line-height: var(--ppt-alto-item-ruleta);
+    font-size: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ==========================================================================
+   4. FORMULARIOS, SELECCIÓN Y BOTONES
+   ========================================================================== */
+.juego-ppt__selector-opciones {
+    border: none;
+    padding: 0;
+    margin: 0;
+    margin-block-end: 25px;
+    display: flex;
+    gap: 12px;
+}
+
+.juego-ppt__radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.juego-ppt__etiqueta {
+    flex: 1;
+    padding: 14px;
+    background: var(--ppt-color-caja-principal);
+    color: var(--ppt-color-texto);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition:
+        background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.25s ease;
+}
+
+@media (hover: hover) {
+    .juego-ppt__etiqueta:hover {
+        border-color: var(--ppt-color-acento);
+        transform: translateY(-2px);
+    }
+}
+
+.juego-ppt__radio:checked + .juego-ppt__etiqueta {
+    background: var(--ppt-color-acento);
+    border-color: var(--ppt-color-acento-brillo);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+}
+
+.juego-ppt__boton-accion {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    background: var(--ppt-color-acento);
+    color: var(--ppt-color-texto);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--ppt-color-sombra-boton);
+    transition:
+        transform 0.1s ease,
+        background-color 0.2s ease,
+        box-shadow 0.1s ease,
+        opacity 0.2s ease;
+}
+
+.juego-ppt__boton-accion:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--ppt-color-sombra-boton);
+}
+
+.juego-ppt__boton-accion:disabled {
+    background: var(--ppt-color-deshabilitado);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.6;
+}
+
+/* Estilos de foco visible para navegación por teclado */
+.juego-ppt__radio:focus-visible + .juego-ppt__etiqueta,
+.juego-ppt__boton-accion:focus-visible {
+    outline: 3px solid var(--ppt-color-texto);
+    outline-offset: 3px;
+}
+
+.juego-ppt__etiqueta kbd {
+    display: inline-block;
+    margin-inline-start: 4px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-family: inherit;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.juego-ppt__radio:checked + .juego-ppt__etiqueta kbd {
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+4b. PALANCA DE TRAGAPERRAS (LADO DERECHO) - CORREGIDA HACIA FUERA
+========================================================================== */
+.juego-ppt__zona-boton {
+    position: relative; /* Ancla para posicionar la palanca */
+}
+
+/* Brazo de la palanca: ahora completamente fuera del borde derecho */
+.juego-ppt__palanca {
+    position: absolute;
+    left: 100%; /* 0️⃣ CORRECCIÓN: Se posiciona justo donde termina el botón */
+    bottom: 50%; 
+    inline-size: 7px;
+    block-size: 46px;
+    background: linear-gradient(90deg, #6b7280, #d1d5db, #6b7280);
+    border-radius: 4px;
+    transform-origin: bottom center;
+    transform: rotate(12deg); /* 🔄 CORRECCIÓN: Ángulo positivo para inclinar hacia fuera (derecha) */
+    transition: transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.3s ease;
+    cursor: pointer;
+    z-index: 3;
+}
+
+/* Bola superior: se mantiene centrada respecto al brazo */
+.juego-ppt__palanca-bola {
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    inline-size: 20px;
+    block-size: 20px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle at 35% 30%, var(--ppt-color-acento-brillo), var(--ppt-color-acento) 60%, var(--ppt-color-sombra-boton));
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Estado «accionada»: gira hacia abajo por el exterior derecho */
+.juego-ppt__palanca.is-down {
+    transform: rotate(155deg); /* 🔄 CORRECCIÓN: Ángulo positivo para que baje por fuera */
+}
+
+/* Estado «oculta»: encoge manteniendo la inclinación exterior */
+.juego-ppt__palanca.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: rotate(12deg) scale(0.4); /* 🔄 CORRECCIÓN: Ángulo positivo */
+}
+
+/* ==========================================================================
+   5. SISTEMA DE CONFETI (Victoria de torneo — puro CSS)
+   ========================================================================== */
+.juego-ppt--ganador {
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes confeti-caida {
+    0% {
+        transform: translateY(-10%) rotateZ(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotateZ(720deg);
+        opacity: 0;
+    }
+}
+
+.juego-ppt--ganador::before,
+.juego-ppt--ganador::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    z-index: 10;
+    pointer-events: none;
+    animation: confeti-caida 3s ease-out infinite;
+}
+
+.juego-ppt--ganador::before {
+    left: 15%;
+    width: 8px;
+    height: 8px;
+    background: var(--ppt-color-acento);
+    border-radius: 50%;
+    box-shadow:
+        25px  15px 0 0 var(--ppt-color-exito),
+        55px  -5px 0 0 var(--ppt-color-empate),
+        -35px 25px 0 0 var(--ppt-color-acento-brillo),
+        75px  10px 0 0 var(--ppt-color-exito),
+        -65px 35px 0 0 var(--ppt-color-empate),
+        95px  20px 0 0 var(--ppt-color-acento),
+        -15px 45px 0 0 var(--ppt-color-acento-brillo),
+        40px  30px 0 0 var(--ppt-color-exito),
+        110px  5px 0 0 var(--ppt-color-empate),
+        -85px 15px 0 0 var(--ppt-color-acento),
+        20px  60px 0 0 var(--ppt-color-acento-brillo),
+        65px  40px 0 0 var(--ppt-color-exito),
+        -50px 50px 0 0 var(--ppt-color-empate);
+}
+
+.juego-ppt--ganador::after {
+    left: 60%;
+    width: 6px;
+    height: 10px;
+    background: var(--ppt-color-exito);
+    border-radius: 2px;
+    animation-delay: 0.4s;
+    box-shadow:
+        -20px 10px 0 0 var(--ppt-color-acento),
+        30px  25px 0 0 var(--ppt-color-empate),
+        -50px 20px 0 0 var(--ppt-color-acento-brillo),
+        60px  -8px 0 0 var(--ppt-color-exito),
+        -70px 40px 0 0 var(--ppt-color-acento),
+        90px  15px 0 0 var(--ppt-color-empate),
+        -40px 55px 0 0 var(--ppt-color-acento-brillo),
+        10px  35px 0 0 var(--ppt-color-exito),
+        100px 45px 0 0 var(--ppt-color-acento),
+        -90px 60px 0 0 var(--ppt-color-empate);
+}
+
+/* ==========================================================================
+   6. CONTROL DE ACCESIBILIDAD MOTOR RESTRINGIDO
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .juego-ppt__etiqueta,
+    .juego-ppt__radio:checked + .juego-ppt__etiqueta {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .juego-ppt--ganador::before,
+    .juego-ppt--ganador::after {
+        animation: none !important;
+        display: none;
+    }
+
+    .juego-ppt__palanca {
+        transition: none !important;
+    }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE ADAPTATIVO (Móviles)
+   --------------------------------------------------------------------------
+   Estrategia: las ruletas y el marcador se mantienen en horizontal todo lo
+   posible (lectura «versus» y aprovechamiento del alto), porque flexbox y las
+   container queries ya gestionan su encogido. Solo se apila el selector de
+   opciones, cuyas tres etiquetas largas sí dejarían de caber en una fila.
+   ========================================================================== */
+
+/* Móvil / tablet estrecho: las 3 opciones ya no caben cómodas en fila */
+@media (max-width: 560px) {
+    .juego-ppt {
+        padding-inline: 18px;
+        padding-block: 22px;
+    }
+
+    .juego-ppt__selector-opciones {
+        flex-direction: column;
+    }
+}
+
+/* Móvil pequeño: ajustes finos para evitar cualquier desborde */
+@media (max-width: 380px) {
+    .juego-ppt__contenedor-ruletas {
+        gap: 12px;
+    }
+
+    .juego-ppt__marcador {
+        padding-inline: 10px;
+        gap: 6px;
+    }
+
+    .juego-ppt__puntuacion {
+        font-size: 1rem;
+    }
+
+    .juego-ppt__carrusel-item {
+        font-size: 2.5rem;
+    }
+}
