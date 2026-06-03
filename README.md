@@ -1,5 +1,4 @@
-# 🎰 Piedra, Papel o Tijera — Componente Premium
-
+# 🎰 Piedra, Papel o Tijera — Slot Edition components
 Juego de Piedra, Papel o Tijera implementado como un **componente web autocontenido** con HTML5 semántico, CSS moderno y JavaScript ES6+ sin dependencias externas ni paso de compilación. Funciona por **torneos a 5 rondas**, con animación de ruletas tipo "tragaperras", confeti puro CSS al ganar, persistencia de la partida y soporte completo de accesibilidad y teclado.
 
 ---
@@ -317,7 +316,7 @@ La accesibilidad está integrada, no añadida al final:
 
 ---
 
-## Glosario de términos técnicos
+## Glosario de términos técnicos avanzados
 
 | Término | Qué significa aquí |
 |---------|--------------------|
