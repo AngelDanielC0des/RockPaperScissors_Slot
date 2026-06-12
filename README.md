@@ -296,10 +296,6 @@ if (document.readyState === 'loading') {
 }
 ```
 
-### Sobre la recursividad
-
-El juego **no usa recursividad**, y es la decisión correcta: un torneo de un número finito de rondas se modela de forma natural con **iteración y estado** (bucles para construir las tiras, un contador de rondas en el modelo). Forzar recursión aquí solo añadiría complejidad y riesgo de desbordamiento de pila sin ningún beneficio.
-
 ---
 
 ## Accesibilidad (a11y)
